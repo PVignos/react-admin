@@ -3,7 +3,7 @@ import {CssBaseline, ThemeProvider} from "@mui/material";
 import {Route, Routes} from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Dashboard from "./scenes/dashboard";
-import Sidebar from "./scenes/global/Sidebar";
+import Side from "./scenes/global/Side";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
 import Contacts from "./scenes/contacts";
@@ -23,7 +23,7 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <div className="app">
-                    <Sidebar />
+                    <Side />
                     <main className="content">
                         <Topbar />
                         <Routes>

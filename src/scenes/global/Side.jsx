@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import {Menu, MenuItem, Sidebar, sidebarClasses, menuClasses, useProSidebar} from "react-pro-sidebar";
+import {Box, IconButton, Typography, useTheme} from "@mui/material";
 import { Link } from "react-router-dom";
-import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -19,60 +18,62 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
     return (
         <MenuItem
             active={selected === title}
-            style={{
-                color: colors.grey[100],
-            }}
             onClick={() => setSelected(title)}
             icon={icon}
+            component={<Link to={to} />}
         >
             <Typography>{title}</Typography>
-            <Link to={to} />
         </MenuItem>
     );
 };
 
-const Sidebar = () => {
+const Side = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
+    const { collapseSidebar, collapsed } = useProSidebar();
 
     return (
         <Box
-            sx={{
-                "& .pro-sidebar-inner": {
-                    background: `${colors.primary[400]} !important`,
-                },
-                "& .pro-icon-wrapper": {
-                    backgroundColor: "transparent !important",
-                },
-                "& .pro-inner-item": {
-                    padding: "5px 35px 5px 20px !important",
-                },
-                "& .pro-inner-item:hover": {
-                    color: "#868dfb !important",
-                },
-                "& .pro-menu-item.active": {
-                    color: "#6870fa !important",
-                },
-            }}
+            display="flex"
+            height="100%"
         >
-            <ProSidebar collapsed={isCollapsed}>
-                <Menu iconShape="square">
+            <Sidebar
+                rootStyles={{
+                    [`.${sidebarClasses.container}`]: {
+                        backgroundColor: `${colors.primary[400]} !important`
+                    }
+                }}>
+                <Menu
+                    iconShape="square"
+                    rootStyles={{
+                        [`.${menuClasses.button}`]: {
+                            padding: "5px 35px 5px 20px !important"
+                        },
+                        [`.${menuClasses.button}:hover`]: {
+                            backgroundColor: 'transparent',
+                            color: "#868dfb !important",
+                        },
+                        [`.${menuClasses.active}`]: {
+                            color: "#6870fa !important"
+                        },
+                        [`.${menuClasses.menuItemRoot}`]: {
+                            color: colors.grey[100]
+                        }
+                    }}>
                     {/* LOGO AND MENU ICON */}
                     <MenuItem
-                        onClick={() => setIsCollapsed(!isCollapsed)}
-                        icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+                        onClick={() => collapseSidebar()}
+                        icon={collapsed ? <MenuOutlinedIcon /> : undefined}
                         style={{
                             margin: "10px 0 20px 0",
                             color: colors.grey[100],
                         }}
                     >
-                        {!isCollapsed && (
+                        {!collapsed && (
                             <Box
                                 display="flex"
                                 justifyContent="space-between"
@@ -82,14 +83,14 @@ const Sidebar = () => {
                                 <Typography variant="h3" color={colors.grey[100]}>
                                     ADMINIS
                                 </Typography>
-                                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                                <IconButton onClick={() => collapseSidebar(!!collapsed)}>
                                     <MenuOutlinedIcon />
                                 </IconButton>
                             </Box>
                         )}
                     </MenuItem>
 
-                    {!isCollapsed && (
+                    {!collapsed && (
                         <Box mb="25px">
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <img
@@ -116,7 +117,7 @@ const Sidebar = () => {
                         </Box>
                     )}
 
-                    <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+                    <Box paddingLeft={collapsed ? undefined : "10%"}>
                         <Item
                             title="Dashboard"
                             to="/"
@@ -220,9 +221,9 @@ const Sidebar = () => {
                         />
                     </Box>
                 </Menu>
-            </ProSidebar>
+            </Sidebar>
         </Box>
     );
 };
 
-export default Sidebar;
+export default Side;
